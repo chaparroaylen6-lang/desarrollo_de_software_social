@@ -1,39 +1,69 @@
-create database if not exists devcircles;
-use devcircles;
+CREATE DATABASE IF NOT EXISTS devcircles;
+USE devcircles;
 
-create table usuarios(
-    id_usuario int auto_increment primary key,
-    nombre varchar(100) not null,
-    email varchar(150) not null unique,
-    password varchar(255) not null,
-    avatar varchar(255),
-    fecha_registro datetime default current_timestamp
+CREATE TABLE usuarios (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(150) NOT NULL UNIQUE,
+  nombre_mostrado VARCHAR(100) NOT NULL,
+  email VARCHAR(150) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  avatar_url VARCHAR(255),
+  bio TEXT,
+  rol VARCHAR(20) NOT NULL DEFAULT 'miembro',
+  reputacion INT NOT NULL DEFAULT 0,
+  activo BOOLEAN NOT NULL DEFAULT TRUE,
+  creado_en DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-create table posts(
-    id_post int auto_increment primary key,
-    id_usuario int not null,
-    contenido text not null,
-    fecha_creacion datetime default current_timestamp,
-    FOREIGN KEY(id_usuario) REFERENCES usuarios(id_usuario) on delete cascade
+CREATE TABLE posts (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  usuario_id INT NOT NULL,
+  tipo VARCHAR(20) NOT NULL,
+  titulo VARCHAR(150),
+  contenido TEXT NOT NULL,
+  likes_count INT NOT NULL DEFAULT 0,
+  comentarios_count INT NOT NULL DEFAULT 0,
+  creado_en DATETIME DEFAULT CURRENT_TIMESTAMP,
+  eliminado BOOLEAN NOT NULL DEFAULT FALSE,
+  FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
 );
 
-create table comentarios(
-    id_comentario int auto_increment primary key,
-    id_post int not null,
-    id_usuario int not null,
-    contenido text not null,
-    fecha_creacion datetime default current_timestamp,
-
-    FOREIGN KEY (id_post) REFERENCES posts(id_post)on delete cascade,
-    FOREIGN KEY(id_usuario) REFERENCES usuarios(id_usuario)on delete cascade
+CREATE TABLE snippets (
+  post_id INT PRIMARY KEY,
+  lenguaje VARCHAR(30),
+  codigo TEXT NOT NULL,
+  nombre_archivo VARCHAR(120),
+  FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
 );
 
-create table likes (
-    id_usuario int not null,
-    id_post int not null,
+CREATE TABLE etiquetas (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(40) NOT NULL,
+  slug VARCHAR(40) NOT NULL UNIQUE
+);
 
-    PRIMARY KEY(id_usuario, id_post),
-    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)on delete cascade,
-    FOREIGN KEY (id_post) REFERENCES posts(id_post)on delete cascade
+CREATE TABLE post_etiquetas (
+  post_id INT NOT NULL,
+  etiqueta_id INT NOT NULL,
+  PRIMARY KEY (post_id, etiqueta_id),
+  FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
+  FOREIGN KEY (etiqueta_id) REFERENCES etiquetas(id) ON DELETE CASCADE
+);
+
+CREATE TABLE comentarios (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  post_id INT NOT NULL,
+  usuario_id INT NOT NULL,
+  contenido TEXT NOT NULL,
+  creado_en DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
+  FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+);
+
+CREATE TABLE likes (
+  usuario_id INT NOT NULL,
+  post_id INT NOT NULL,
+  PRIMARY KEY (usuario_id, post_id),
+  FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+  FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
 );
