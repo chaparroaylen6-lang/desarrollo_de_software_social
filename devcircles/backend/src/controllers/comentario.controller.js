@@ -1,12 +1,13 @@
 const comentarioModel = require('../models/comentario.model');
 const postModel = require('../models/post.model');
+const notificacionModel = require('../models/notificacion.model');
 const AppError = require('../utils/AppError');
 const asyncHandler = require('../utils/asyncHandler');
 
 // Listar comentarios de un post específico
 const listarComentariosPorPost = asyncHandler(async (req, res) => {
   const { postId } = req.params;
-  
+
   // Verificamos que el post exista
   const post = await postModel.buscarPorId(postId);
   if (!post) throw new AppError('Post no encontrado', 404);
@@ -29,6 +30,15 @@ const crearComentario = asyncHandler(async (req, res) => {
     usuarioId: req.usuario.id,
     contenido,
   });
+
+  // Notificamos al dueño del post, salvo que se esté comentando su propio post
+  if (post.usuario_id !== req.usuario.id) {
+    await notificacionModel.crear({
+      usuarioId: post.usuario_id,
+      tipo: 'comentario',
+      mensaje: `${req.usuario.username} comentó tu post`,
+    });
+  }
 
   const nuevoComentario = await comentarioModel.buscarPorId(id);
   res.status(201).json({ data: nuevoComentario });

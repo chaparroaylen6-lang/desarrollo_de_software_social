@@ -1,5 +1,6 @@
 const likeModel = require('../models/like.model');
 const postModel = require('../models/post.model');
+const notificacionModel = require('../models/notificacion.model');
 const AppError = require('../utils/AppError');
 const asyncHandler = require('../utils/asyncHandler');
 
@@ -20,6 +21,16 @@ const toggleLike = asyncHandler(async (req, res) => {
     res.json({ message: 'Like eliminado con éxito', liked: false });
   } else {
     await likeModel.crear(usuarioId, postId);
+
+    // Notificamos al dueño del post, salvo que se esté dando like a su propio post
+    if (post.usuario_id !== usuarioId) {
+      await notificacionModel.crear({
+        usuarioId: post.usuario_id,
+        tipo: 'like',
+        mensaje: `${req.usuario.username} le dio like a tu post`,
+      });
+    }
+
     res.status(201).json({ message: 'Like registrado con éxito', liked: true });
   }
 });

@@ -67,3 +67,34 @@ CREATE TABLE likes (
   FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
   FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
 );
+CREATE TABLE seguimiento (
+  seguidor_id INT NOT NULL,
+  seguido_id INT NOT NULL,
+  creado_en DATETIME DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (seguidor_id, seguido_id),
+  FOREIGN KEY (seguidor_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+  FOREIGN KEY (seguido_id) REFERENCES usuarios(id) ON DELETE CASCADE
+);
+
+CREATE TABLE notificaciones (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  usuario_id INT NOT NULL,
+  tipo VARCHAR(30) NOT NULL,
+  mensaje VARCHAR(255) NOT NULL,
+  leido BOOLEAN NOT NULL DEFAULT FALSE,
+  creado_en DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+);
+
+CREATE TABLE reportes (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  usuario_id INT NOT NULL,
+  post_id INT NULL,
+  comentario_id INT NULL,
+  razon VARCHAR(255) NOT NULL,
+  estado VARCHAR(20) NOT NULL DEFAULT 'pendiente',
+  creado_en DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+  FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
+  FOREIGN KEY (comentario_id) REFERENCES comentarios(id) ON DELETE CASCADE
+);

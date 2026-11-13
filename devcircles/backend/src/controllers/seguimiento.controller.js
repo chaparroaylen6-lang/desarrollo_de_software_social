@@ -1,5 +1,6 @@
 const seguimientoModel = require('../models/seguimiento.model');
 const usuarioModel = require('../models/usuario.model');
+const notificacionModel = require('../models/notificacion.model');
 const AppError = require('../utils/AppError');
 const asyncHandler = require('../utils/asyncHandler');
 
@@ -21,6 +22,13 @@ const toggleSeguir = asyncHandler(async (req, res) => {
     res.json({ message: 'Dejaste de seguir al usuario', siguiendo: false });
   } else {
     await seguimientoModel.crear(seguidorId, seguidoId);
+
+    await notificacionModel.crear({
+      usuarioId: seguidoId,
+      tipo: 'seguimiento',
+      mensaje: `${req.usuario.username} empezó a seguirte`,
+    });
+
     res.status(201).json({ message: 'Ahora seguís al usuario', siguiendo: true });
   }
 });
