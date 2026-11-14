@@ -26,7 +26,9 @@ export class UserAvatar extends BaseComponent {
         font: 600 1rem/1 var(--font-family, sans-serif);
       }
       .avatar { object-fit: cover; }
-      .fallback[hidden] { display: none; }
+      /* display:grid de la regla de arriba le gana al atributo hidden:
+         sin esto, la imagen rota sigue ocupando lugar y muestra su texto alt */
+      .avatar[hidden], .fallback[hidden] { display: none; }
       user-badge {
         position: absolute;
         right: -0.5rem;

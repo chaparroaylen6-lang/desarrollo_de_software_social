@@ -2,10 +2,12 @@ const { pool } = require('../config/db');
 
 const listarPorPost = async (postId) => {
   const [rows] = await pool.query(
-    `SELECT id, post_id AS postId, usuario_id AS usuarioId, contenido, creado_en
-     FROM comentarios
-     WHERE post_id = ?
-     ORDER BY creado_en ASC`,
+    `SELECT c.id, c.post_id AS postId, c.usuario_id AS usuarioId, c.contenido, c.creado_en,
+            u.username AS autor_username, u.avatar_url AS autor_avatar
+     FROM comentarios c
+     JOIN usuarios u ON u.id = c.usuario_id
+     WHERE c.post_id = ?
+     ORDER BY c.creado_en ASC`,
     [postId]
   );
   return rows;
@@ -13,9 +15,11 @@ const listarPorPost = async (postId) => {
 
 const buscarPorId = async (id) => {
   const [rows] = await pool.query(
-    `SELECT id, post_id AS postId, usuario_id AS usuarioId, contenido, creado_en
-     FROM comentarios
-     WHERE id = ?
+    `SELECT c.id, c.post_id AS postId, c.usuario_id AS usuarioId, c.contenido, c.creado_en,
+            u.username AS autor_username, u.avatar_url AS autor_avatar
+     FROM comentarios c
+     JOIN usuarios u ON u.id = c.usuario_id
+     WHERE c.id = ?
      LIMIT 1`,
     [id]
   );

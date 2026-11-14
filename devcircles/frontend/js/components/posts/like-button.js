@@ -34,7 +34,22 @@ export class LikeButton extends BaseComponent {
     this.shadowRoot.querySelector('button').addEventListener('click', () => this.toggle());
   }
 
+  /**
+   * Si alguien asignó .likes o .liked antes de que el navegador terminara de
+   * "despertar" este custom element, esas propiedades quedaron como propiedades
+   * sueltas del elemento, tapando a las de la clase. Las rescatamos y las
+   * volvemos a aplicar, ahora sí por el setter de verdad.
+   */
+  adoptarPropiedad(nombre) {
+    if (!Object.prototype.hasOwnProperty.call(this, nombre)) return;
+    const valor = this[nombre];
+    delete this[nombre];
+    this[nombre] = valor;
+  }
+
   connectedCallback() {
+    this.adoptarPropiedad('likes');
+    this.adoptarPropiedad('liked');
     if (this._likes === null) this._likes = this.readCountAttribute();
     if (this._liked === null) this._liked = this.hasAttribute('liked') || this.hasAttribute('active');
     this.update();

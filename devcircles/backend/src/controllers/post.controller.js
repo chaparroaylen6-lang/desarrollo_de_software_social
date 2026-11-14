@@ -7,7 +7,7 @@ const listarPosts = asyncHandler(async (req, res) => {
   const { limite, offset, pagina } = parsearPaginacion(req.query);
   const { tipo, etiqueta, orden } = req.query;
 
-  const { posts, total } = await postModel.listar({ limite, offset, tipo, etiqueta, orden });
+  const { posts, total } = await postModel.listar({ limite, offset, tipo, etiqueta, orden, usuarioId: req.usuario?.id ?? null });
 
   res.json({
     data: posts,
@@ -16,14 +16,23 @@ const listarPosts = asyncHandler(async (req, res) => {
 });
 
 const obtenerPost = asyncHandler(async (req, res) => {
-  const post = await postModel.buscarPorId(req.params.id);
+  const post = await postModel.buscarPorId(req.params.id, req.usuario?.id ?? null);
   if (!post) throw new AppError('Post no encontrado', 404);
   res.json({ data: post });
 });
 
 const crearPost = asyncHandler(async (req, res) => {
-  const { tipo, titulo, contenido } = req.body;
-  const id = await postModel.crear({ usuario_id: req.usuario.id, tipo, titulo, contenido });
+  const { tipo, titulo, contenido, etiquetas, lenguaje, codigo, nombre_archivo } = req.body;
+  const id = await postModel.crear({
+    usuario_id: req.usuario.id,
+    tipo,
+    titulo,
+    contenido,
+    etiquetas,
+    lenguaje,
+    codigo,
+    nombre_archivo,
+  });
   const post = await postModel.buscarPorId(id);
   res.status(201).json({ data: post });
 });

@@ -12,7 +12,7 @@ const pool = mysql.createPool({
   connectionLimit: config.db.connectionLimit,
   waitForConnections: true,
   queueLimit: 0,            // cola ilimitada
-  timezone: 'Z',            // fechas en UTC, siempre
+  timezone: 'local',            // fechas en UTC, siempre
   decimalNumbers: true,     // evita strings en columnas DECIMAL
 });
 

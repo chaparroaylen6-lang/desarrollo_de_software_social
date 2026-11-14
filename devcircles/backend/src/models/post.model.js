@@ -1,10 +1,12 @@
 const { pool } = require('../config/db');
+const etiquetaModel = require('./etiqueta.model');
 
 /**
  * Feed paginado. Acepta filtros opcionales: tipo, etiqueta, orden.
+ * Si se pasa usuarioId, cada post indica si ese usuario ya le dio like.
  * Devuelve { posts, total } para armar la meta de paginación en el controller.
  */
-const listar = async ({ limite, offset, tipo, etiqueta, orden = 'reciente' }) => {
+const listar = async ({ limite, offset, tipo, etiqueta, orden = 'reciente', usuarioId = null }) => {
   const ordenSQL = orden === 'popular' ? 'p.likes_count DESC' : 'p.creado_en DESC';
 
   // Construye los filtros dinámicamente
@@ -22,15 +24,24 @@ const listar = async ({ limite, offset, tipo, etiqueta, orden = 'reciente' }) =>
 
   const where = condiciones.join(' AND ');
 
+  // Sin usuario logueado no hay nada que marcar: la columna sale siempre en falso
+  const likedSQL = usuarioId
+    ? 'EXISTS (SELECT 1 FROM likes l WHERE l.post_id = p.id AND l.usuario_id = ?)'
+    : 'FALSE';
+  const likedParams = usuarioId ? [usuarioId] : [];
+
   const [posts] = await pool.query(
     `SELECT p.id, p.tipo, p.titulo, p.contenido, p.likes_count, p.comentarios_count, p.creado_en,
-            u.id AS autor_id, u.username AS autor_username, u.avatar_url AS autor_avatar
+            u.id AS autor_id, u.username AS autor_username, u.avatar_url AS autor_avatar,
+            s.lenguaje, s.codigo, s.nombre_archivo,
+            ${likedSQL} AS liked
      FROM posts p
      JOIN usuarios u ON p.usuario_id = u.id
+     LEFT JOIN snippets s ON s.post_id = p.id
      WHERE ${where}
      ORDER BY ${ordenSQL}
      LIMIT ? OFFSET ?`,
-    [...params, limite, offset]
+    [...likedParams, ...params, limite, offset]
   );
 
   const [[{ total }]] = await pool.query(
@@ -38,28 +49,62 @@ const listar = async ({ limite, offset, tipo, etiqueta, orden = 'reciente' }) =>
     params
   );
 
+  // Las etiquetas de todos los posts, en una sola consulta extra
+  const etiquetasPorPost = await etiquetaModel.listarPorPosts(posts.map((p) => p.id));
+  for (const post of posts) {
+    post.etiquetas = etiquetasPorPost.get(post.id) ?? [];
+    post.liked = Boolean(post.liked);
+  }
+
   return { posts, total };
 };
 
-const buscarPorId = async (id) => {
+const buscarPorId = async (id, usuarioId = null) => {
+  const likedSQL = usuarioId
+    ? 'EXISTS (SELECT 1 FROM likes l WHERE l.post_id = p.id AND l.usuario_id = ?)'
+    : 'FALSE';
+  const likedParams = usuarioId ? [usuarioId] : [];
+
   const [rows] = await pool.query(
     `SELECT p.*, u.username AS autor_username, u.avatar_url AS autor_avatar,
-            s.lenguaje, s.codigo, s.nombre_archivo
+            s.lenguaje, s.codigo, s.nombre_archivo,
+            ${likedSQL} AS liked
      FROM posts p
      JOIN usuarios u ON p.usuario_id = u.id
      LEFT JOIN snippets s ON s.post_id = p.id
      WHERE p.id = ? AND p.eliminado = FALSE`,
-    [id]
+    [...likedParams, id]
   );
-  return rows[0] ?? null;
+
+  const post = rows[0] ?? null;
+  if (post) {
+    const etiquetasPorPost = await etiquetaModel.listarPorPosts([post.id]);
+    post.etiquetas = etiquetasPorPost.get(post.id) ?? [];
+    post.liked = Boolean(post.liked);
+  }
+  return post;
 };
 
-const crear = async ({ usuario_id, tipo, titulo, contenido }) => {
+const crear = async ({ usuario_id, tipo, titulo, contenido, etiquetas, lenguaje, codigo, nombre_archivo }) => {
   const [result] = await pool.query(
     'INSERT INTO posts (usuario_id, tipo, titulo, contenido) VALUES (?, ?, ?, ?)',
     [usuario_id, tipo, titulo ?? null, contenido]
   );
-  return result.insertId;
+  const postId = result.insertId;
+
+  // Los posts de tipo snippet guardan su código en su propia tabla
+  if (tipo === 'snippet' && codigo) {
+    await pool.query(
+      'INSERT INTO snippets (post_id, lenguaje, codigo, nombre_archivo) VALUES (?, ?, ?, ?)',
+      [postId, lenguaje ?? null, codigo, nombre_archivo ?? null]
+    );
+  }
+
+  if (Array.isArray(etiquetas) && etiquetas.length > 0) {
+    await etiquetaModel.asignarAPost(postId, etiquetas);
+  }
+
+  return postId;
 };
 
 const actualizar = async (id, campos) => {

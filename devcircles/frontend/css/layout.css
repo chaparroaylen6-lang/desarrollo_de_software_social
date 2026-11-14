@@ -1,0 +1,73 @@
+/* Los Web Components leen estos nombres de variables, así que redefinirlos
+   acá alcanza para que todo el sistema quede en el tema oscuro del proyecto. */
+:root {
+  color-scheme: dark;
+  --surface-color: #313244;
+  --surface-subtle-color: #45475a;
+  --border-color: #45475a;
+  --text-color: #cdd6f4;
+  --muted-color: #a6adc8;
+  --primary-color: #cba6f7;
+  --primary-color-hover: #b4befe;
+  --on-primary: #1e1e2e;
+  --success-color: #a6e3a1;
+  --warning-color: #f9e2af;
+  --error-color: #f38ba8;
+  --shadow-card: 0 1px 3px rgb(0 0 0 / 35%);
+  --nav-text: #cdd6f4;
+  --nav-accent: #cba6f7;
+  --nav-borde: #45475a;
+}
+
+.marca { display: inline-flex; align-items: center; padding-left: 16px; }
+.logo { height: 44px; width: auto; display: block; }
+
+.area-principal { display: flex; min-height: 0; }
+
+.barra-lateral { overflow-y: auto; }
+
+.titulo-lateral {
+  margin: 0 0 12px;
+  color: #cdd6f4;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.etiquetas { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.etiqueta-link {
+  padding: 4px 10px;
+  border: 1px solid #45475a;
+  border-radius: 999px;
+  color: #cba6f7;
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+
+.etiqueta-link:hover { background: #45475a; }
+
+.lateral-vacio { color: #a6adc8; font-size: 0.85rem; }
+
+.contenido {
+  flex-grow: 1;
+  display: grid;
+  align-content: start;
+  gap: 16px;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.lista-posts { display: grid; gap: 16px; }
+
+.post { display: grid; gap: 4px; }
+
+.post-pie { padding-left: 4px; }
+
+.link-comentarios {
+  color: #a6adc8;
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+
+.link-comentarios:hover { color: #cba6f7; text-decoration: underline; }

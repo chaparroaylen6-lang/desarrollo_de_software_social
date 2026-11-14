@@ -22,6 +22,8 @@ export class PostCard extends BaseComponent {
       .author { display: grid; gap: 0.1rem; }
       .username { font-weight: 650; }
       time { color: var(--muted-color, #64748b); font-size: 0.8rem; }
+      .titulo { margin: 0; font-size: 1.05rem; font-weight: 650; overflow-wrap: anywhere; }
+      .titulo[hidden] { display: none; }
       .content { margin: 0; overflow-wrap: anywhere; white-space: pre-wrap; }
       .tags { display: flex; flex-wrap: wrap; gap: var(--space-2, 0.5rem); }
       footer { border-top: 1px solid var(--border-color, #dbe3ee); padding-top: var(--space-2, 0.5rem); }
@@ -35,6 +37,7 @@ export class PostCard extends BaseComponent {
           <time></time>
         </div>
       </header>
+      <h3 class="titulo" hidden></h3>
       <p class="content"></p>
       <code-snippet hidden></code-snippet>
       <div class="tags"></div>
@@ -67,6 +70,7 @@ export class PostCard extends BaseComponent {
     const username = post.username ?? post.usuario?.username ?? this.getAttribute('username') ?? 'Usuario';
     const avatar = post.avatar ?? post.usuario?.avatar ?? this.getAttribute('avatar') ?? '';
     const role = post.rol ?? post.usuario?.rol ?? this.getAttribute('rol') ?? '';
+    const titulo = post.titulo ?? post.title ?? this.getAttribute('titulo') ?? '';
     const content = post.content ?? post.contenido ?? this.getAttribute('content') ?? '';
     const type = post.type ?? post.tipo ?? this.getAttribute('type') ?? 'text';
     const code = post.code ?? post.codigo ?? this.getAttribute('code') ?? '';
@@ -82,6 +86,11 @@ export class PostCard extends BaseComponent {
     if (role) userAvatar.setAttribute('rol', role);
     else userAvatar.removeAttribute('rol');
     this.shadowRoot.querySelector('.username').textContent = username;
+
+    const tituloNodo = this.shadowRoot.querySelector('.titulo');
+    tituloNodo.textContent = titulo;
+    tituloNodo.hidden = !titulo;
+
     this.shadowRoot.querySelector('.content').textContent = content;
 
     const time = this.shadowRoot.querySelector('time');

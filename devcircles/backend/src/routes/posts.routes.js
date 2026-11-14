@@ -13,10 +13,10 @@ const { crearPostSchema, editarPostSchema } = require('../validators/post.valida
 const router = Router();
 
 // GET  /api/posts?pagina=1&limite=20&tipo=snippet&etiqueta=js&orden=popular
-router.get('/', listarPosts);
+router.get('/', authMiddleware.opcional, listarPosts);
 
 // GET  /api/posts/:id
-router.get('/:id', obtenerPost);
+router.get('/:id', authMiddleware.opcional, obtenerPost);
 
 // POST /api/posts  — requiere autenticación
 router.post('/', authMiddleware, validar(crearPostSchema), crearPost);

@@ -1,0 +1,80 @@
+/* Piezas sueltas que no son Web Components: formularios, avisos y listas
+   que arman las vistas directamente. */
+.titulo-vista { margin: 0; color: var(--text-color); font-size: 1.2rem; }
+
+.tarjeta {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--surface-color);
+  box-shadow: var(--shadow-card);
+}
+
+.form-auth { max-width: 24rem; }
+
+.campo { display: grid; gap: 4px; color: var(--text-color); font-size: 0.85rem; font-weight: 650; }
+
+.campo input {
+  padding: 8px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-color);
+  background: var(--surface-subtle-color);
+  font: inherit;
+  font-weight: 400;
+}
+
+.boton-primario {
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 999px;
+  color: var(--on-primary);
+  background: var(--primary-color);
+  font: inherit;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.boton-primario:hover { background: var(--primary-color-hover); }
+.boton-primario[disabled] { opacity: 0.6; cursor: default; }
+
+.boton-texto {
+  border: 0;
+  color: var(--primary-color);
+  background: transparent;
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  justify-self: start;
+}
+
+.boton-texto:hover { text-decoration: underline; }
+
+.error-form { margin: 0; color: var(--error-color); font-size: 0.9rem; }
+
+.aviso-sesion, .filtro-activo, .cargando { margin: 0; color: var(--muted-color); font-size: 0.9rem; }
+.aviso-sesion a, .filtro-activo a { color: var(--primary-color); }
+
+.volver { color: var(--muted-color); font-size: 0.9rem; text-decoration: none; justify-self: start; }
+.volver:hover { color: var(--primary-color); }
+
+.lista-notis { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+
+.noti {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--primary-color);
+  border-radius: 12px;
+  background: var(--surface-color);
+}
+
+.noti.leida { border-left-color: var(--border-color); opacity: 0.65; }
+.noti-icono { font-size: 1.1rem; }
+.noti-cuerpo { flex: 1; display: grid; gap: 2px; }
+.noti-texto { margin: 0; color: var(--text-color); }
+.noti-fecha { color: var(--muted-color); font-size: 0.75rem; }

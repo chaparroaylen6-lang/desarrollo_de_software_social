@@ -20,4 +20,21 @@ function authMiddleware(req, res, next) {
   }
 }
 
+/**
+ * Igual que authMiddleware pero no corta la request si no hay token.
+ * Sirve para rutas públicas que muestran algo distinto si estás logueado.
+ */
+function authOpcional(req, _res, next) {
+  const header = req.headers.authorization;
+  if (header?.startsWith('Bearer ')) {
+    try {
+      req.usuario = verificar(header.slice(7));
+    } catch {
+      // Token vencido o inválido: seguimos como visitante anónimo
+    }
+  }
+  next();
+}
+
 module.exports = authMiddleware;
+module.exports.opcional = authOpcional;
