@@ -1,80 +1,299 @@
-/* Piezas sueltas que no son Web Components: formularios, avisos y listas
-   que arman las vistas directamente. */
-.titulo-vista { margin: 0; color: var(--text-color); font-size: 1.2rem; }
+/* ── Piezas sueltas globales: formularios, avisos, listas, estados ── */
 
+/* Títulos de vista */
+.titulo-vista {
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--color-text-primary);
+}
+
+/* Tarjeta genérica (usa login y otras vistas) */
 .tarjeta {
   display: grid;
-  gap: 12px;
-  padding: 16px;
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  background: var(--surface-color);
-  box-shadow: var(--shadow-card);
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
 }
 
-.form-auth { max-width: 24rem; }
+.tarjeta:hover {
+  border-color: var(--color-border-hover);
+  box-shadow: var(--shadow-md);
+}
 
-.campo { display: grid; gap: 4px; color: var(--text-color); font-size: 0.85rem; font-weight: 650; }
+/* Formulario de auth */
+.form-auth {
+  max-width: 28rem;
+  width: 100%;
+}
+
+/* Campo de formulario */
+.campo {
+  display: grid;
+  gap: var(--space-1);
+  color: var(--color-text-secondary);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
 
 .campo input {
-  padding: 8px 10px;
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  color: var(--text-color);
-  background: var(--surface-subtle-color);
-  font: inherit;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  background: var(--color-surface);
+  font-size: var(--text-base);
   font-weight: 400;
+  transition: all var(--transition-fast);
 }
 
+.campo input:focus {
+  border-color: var(--color-border-focus);
+  box-shadow: 0 0 0 3px var(--color-accent-bg);
+  outline: none;
+}
+
+.campo input::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* Botón primario */
 .boton-primario {
-  padding: 8px 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-4);
   border: 0;
-  border-radius: 999px;
-  color: var(--on-primary);
-  background: var(--primary-color);
+  border-radius: var(--radius-full);
+  color: var(--color-text-inverse);
+  background: var(--color-accent);
   font: inherit;
-  font-weight: 650;
+  font-weight: 600;
+  font-size: var(--text-sm);
+  letter-spacing: -0.01em;
   cursor: pointer;
+  transition: all var(--transition-fast);
 }
 
-.boton-primario:hover { background: var(--primary-color-hover); }
-.boton-primario[disabled] { opacity: 0.6; cursor: default; }
+.boton-primario:hover {
+  background: var(--color-accent-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
 
+.boton-primario:active {
+  background: var(--color-accent-pressed);
+  transform: translateY(0);
+}
+
+.boton-primario[disabled] {
+  opacity: 0.6;
+  cursor: default;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Botón de texto */
 .boton-texto {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
   border: 0;
-  color: var(--primary-color);
+  border-radius: var(--radius-md);
+  color: var(--color-accent);
   background: transparent;
   font: inherit;
-  font-size: 0.85rem;
+  font-size: var(--text-sm);
+  font-weight: 500;
   cursor: pointer;
-  justify-self: start;
+  transition: all var(--transition-fast);
 }
 
-.boton-texto:hover { text-decoration: underline; }
+.boton-texto:hover {
+  color: var(--color-accent-hover);
+  background: var(--color-accent-bg);
+  text-decoration: none;
+}
 
-.error-form { margin: 0; color: var(--error-color); font-size: 0.9rem; }
+.boton-texto:active {
+  background: var(--color-accent-bg);
+}
 
-.aviso-sesion, .filtro-activo, .cargando { margin: 0; color: var(--muted-color); font-size: 0.9rem; }
-.aviso-sesion a, .filtro-activo a { color: var(--primary-color); }
+/* Mensajes de error */
+.error-form {
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-error-border);
+  border-radius: var(--radius-md);
+  color: var(--color-error);
+  background: var(--color-error-bg);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  animation: slideIn var(--transition-base) ease-out;
+}
 
-.volver { color: var(--muted-color); font-size: 0.9rem; text-decoration: none; justify-self: start; }
-.volver:hover { color: var(--primary-color); }
+/* Aviso de sesión */
+.aviso-sesion,
+.filtro-activo,
+.cargando {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
 
-.lista-notis { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.aviso-sesion a,
+.filtro-activo a {
+  color: var(--color-accent);
+  font-weight: 600;
+  transition: color var(--transition-fast);
+}
+
+.aviso-sesion a:hover,
+.filtro-activo a:hover {
+  color: var(--color-accent-hover);
+  text-decoration: underline;
+}
+
+/* Estado de carga */
+.cargando {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.cargando::before {
+  content: '';
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--color-border);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Botón volver */
+.volver {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  transition: all var(--transition-fast);
+}
+
+.volver:hover {
+  color: var(--color-accent);
+}
+
+/* ── Lista de notificaciones ── */
+.lista-notis {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
 
 .noti {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  border: 1px solid var(--border-color);
-  border-left: 4px solid var(--primary-color);
-  border-radius: 12px;
-  background: var(--surface-color);
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-accent);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-xs);
+  transition: all var(--transition-fast);
+  cursor: pointer;
 }
 
-.noti.leida { border-left-color: var(--border-color); opacity: 0.65; }
-.noti-icono { font-size: 1.1rem; }
-.noti-cuerpo { flex: 1; display: grid; gap: 2px; }
-.noti-texto { margin: 0; color: var(--text-color); }
-.noti-fecha { color: var(--muted-color); font-size: 0.75rem; }
+.noti:hover {
+  border-color: var(--color-border-hover);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+
+.noti.leida {
+  border-left-color: var(--color-border);
+  opacity: 0.7;
+  background: var(--color-surface-elevated);
+}
+
+.noti-icono {
+  flex: 0 0 auto;
+  font-size: var(--text-lg);
+  line-height: 1;
+}
+
+.noti-cuerpo {
+  flex: 1;
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.noti-texto {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  line-height: var(--leading-tight);
+}
+
+.noti-fecha {
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  font-weight: 400;
+}
+
+/* ── Estados vacíos globales ── */
+.empty-state-global {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8) var(--space-4);
+  text-align: center;
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+}
+
+.empty-state-global p {
+  margin-top: var(--space-2);
+  font-size: var(--text-sm);
+}
+
+/* ── Indicador de notificaciones no leídas (badge) ── */
+.pendientes {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+

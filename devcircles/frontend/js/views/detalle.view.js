@@ -66,6 +66,8 @@ export async function montarDetalle(contenedor, { id }) {
       avisar('Comentario publicado', 'success');
     } catch (fallo) {
       avisar(fallo.message, 'error');
+    } finally {
+      hilo.cargando = false;
     }
   });
 }

@@ -60,12 +60,18 @@ export class CommentThread extends BaseComponent {
     super();
     this._comentarios = [];
     this._puedeComentar = true;
+    this._cargando = false;
 
-    this.shadowRoot.querySelector('form').addEventListener('submit', (evento) => {
+    const form = this.shadowRoot.querySelector('form');
+    const boton = form.querySelector('button[type="submit"]');
+
+    form.addEventListener('submit', (evento) => {
       evento.preventDefault();
       const input = evento.target.elements.contenido;
       const contenido = input.value.trim();
       if (!contenido) return;
+
+      this.cargando = true;
 
       this.dispatchEvent(new CustomEvent('comentario-submit', {
         bubbles: true,
@@ -74,6 +80,19 @@ export class CommentThread extends BaseComponent {
       }));
       input.value = '';
     });
+  }
+
+  set cargando(valor) {
+    this._cargando = Boolean(valor);
+    const boton = this.shadowRoot.querySelector('button[type="submit"]');
+    if (boton) {
+      boton.disabled = this._cargando;
+      boton.textContent = this._cargando ? 'Enviando...' : 'Enviar';
+    }
+  }
+
+  get cargando() {
+    return this._cargando;
   }
 
   connectedCallback() {

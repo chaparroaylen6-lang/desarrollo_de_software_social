@@ -1,4 +1,5 @@
 import { BaseComponent } from '../base-component.js';
+import { avisar } from '../../utils/dom.js';
 
 export class CodeSnippet extends BaseComponent {
   static observedAttributes = ['language'];
@@ -108,9 +109,11 @@ export class CodeSnippet extends BaseComponent {
     const button = this.shadowRoot.querySelector('.copy');
     try {
       await navigator.clipboard.writeText(this.code);
-      button.textContent = 'Copiado';
+      button.textContent = '¡Copiado!';
+      avisar('Código copiado al portapapeles', 'success');
     } catch {
       button.textContent = 'No se pudo copiar';
+      avisar('No se pudo copiar el código', 'error');
     }
     window.setTimeout(() => {
       if (button.isConnected) button.textContent = 'Copiar';

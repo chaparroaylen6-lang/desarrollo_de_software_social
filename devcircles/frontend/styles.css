@@ -1,3 +1,5 @@
+/* ── Estilos globales del shell (index.html) ── */
+
 *,
 *::before,
 *::after {
@@ -5,65 +7,123 @@
 }
 
 body {
-    background-color: #1e1e2e;
-    margin: 0px;
-    gap: 0px;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
+    background: var(--color-bg);
+    margin: 0;
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: var(--leading-normal);
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
+/* Header */
 header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 2px solid #45475a;
-    height: 60px;
+    position: sticky;
+    top: 0;
+    z-index: var(--z-sticky);
+    height: 64px;
+    padding: 0 var(--space-6);
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
 }
 
 header > .centro {
-    height: 50px;
     display: flex;
     align-items: center;
-}
-
-header > .centro {
-    width: max(20%, 200px);
-    height: 36px;
+    gap: var(--space-2);
 }
 
 .barra-buscar {
-    width: 100%;
-    height: inherit;
-    background-color: #45475a;
-    border-radius: 999px;
+    width: 260px;
+    height: 36px;
+    background: var(--color-surface-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
+    justify-content: space-between;
+    padding: 0 var(--space-3);
+    gap: var(--space-1);
+    transition: all var(--transition-fast);
+}
+
+.barra-buscar:focus-within {
+  border-color: var(--color-border-focus);
+  box-shadow: 0 0 0 3px var(--color-accent-bg);
+  background: var(--color-surface);
 }
 
 .texto-buscar {
-    color: #cdd6f4;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    font-weight: 500;
 }
 
+/* Área principal */
 .area-principal {
-    flex-grow: 1;
+    flex: 1;
+    display: flex;
+    gap: 0;
+    min-height: calc(100vh - 64px);
 }
 
+/* Barra lateral */
 .barra-lateral {
-    width: min(400px, 20%);
-    height: 100%;
-    padding: 20px;
-    border-right: 2px solid #45475a;
+    width: min(280px, 25%);
+    padding: var(--space-5) var(--space-4);
+    overflow-y: auto;
+    flex-shrink: 0;
+    border-right: 1px solid var(--color-border);
+    background: var(--color-surface);
 }
 
 p {
-    margin-top: 0px;
-    color: #bac2de;
+    margin: 0 0 var(--space-3);
+    color: var(--color-text-secondary);
 }
 
 span.tmp {
-    color: #cba6f7;
-    margin: 0px;
+    color: var(--color-accent);
+    font-weight: 600;
+}
+
+/* ── Responsive shell ── */
+@media (max-width: 900px) {
+  .area-principal {
+    flex-direction: column;
+  }
+
+  .barra-lateral {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--color-border);
+    padding: var(--space-4);
+    max-height: 160px;
+    overflow-y: auto;
+  }
+
+  header {
+    padding: 0 var(--space-4);
+  }
+
+  .barra-buscar {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .contenido {
+    padding: var(--space-3);
+  }
+
+  .barra-lateral {
+    padding: var(--space-3);
+    max-height: 140px;
+  }
 }

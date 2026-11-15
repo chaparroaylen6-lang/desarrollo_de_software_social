@@ -50,13 +50,30 @@ export function montarLogin(contenedor) {
   form.addEventListener('submit', async (evento) => {
     evento.preventDefault();
     error.hidden = true;
+
+    const email = form.elements.email.value.trim();
+    const password = form.elements.password.value;
+    const username = form.elements.username.value.trim();
+
+    // Validación de campos vacíos antes de enviar
+    if (!email || !password) {
+      error.textContent = 'Completá email y contraseña';
+      error.hidden = false;
+      return;
+    }
+    if (modoRegistro && !username) {
+      error.textContent = 'Completá el nombre de usuario';
+      error.hidden = false;
+      return;
+    }
+
     boton.disabled = true;
     boton.textContent = 'Entrando...';
 
     const datos = {
-      username: form.elements.username.value.trim(),
-      email: form.elements.email.value.trim(),
-      password: form.elements.password.value,
+      username,
+      email,
+      password,
     };
 
     try {
