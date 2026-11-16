@@ -179,12 +179,6 @@
   --error-color: var(--color-error);
   --font-family: var(--font-sans);
   --font-monospace: var(--font-mono);
-  --space-2: var(--space-2);
-  --space-3: var(--space-3);
-  --space-4: var(--space-4);
-  --space-6: var(--space-6);
-  --radius-md: var(--radius-md);
-  --radius-full: var(--radius-full);
   --shadow-card: var(--shadow-md);
 
   /* Nav (mantener nombres que usa nav-principal) */
