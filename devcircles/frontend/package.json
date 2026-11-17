@@ -1,0 +1,13 @@
+{
+  "name": "devcircles-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Frontend estático de DevCircles",
+  "scripts": {
+    "start": "serve . -l $PORT",
+    "build": "echo 'No build step needed for static site'"
+  },
+  "dependencies": {
+    "serve": "^14.2.1"
+  }
+}

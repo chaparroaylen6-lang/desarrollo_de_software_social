@@ -1,5 +1,7 @@
 // Único lugar donde se define a dónde apunta el frontend.
-const BASE_URL = 'http://localhost:3000/api';
+const BASE_URL = window.location.hostname === 'localhost'
+  ? 'http://localhost:3000/api'
+  : 'https://TU-BACKEND.up.railway.app/api';
 const TOKEN_KEY = 'devcircles_token';
 
 export function guardarToken(token) {
