@@ -1,7 +1,10 @@
 // Único lugar donde se define a dónde apunta el frontend.
-const BASE_URL = window.location.hostname === 'localhost'
+const esLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+
+const BASE_URL = esLocal
   ? 'http://localhost:3000/api'
-  : 'https://TU-BACKEND.up.railway.app/api';
+  : 'https://devcircles-back-end-production.up.railway.app/api';
+
 const TOKEN_KEY = 'devcircles_token';
 
 export function guardarToken(token) {
