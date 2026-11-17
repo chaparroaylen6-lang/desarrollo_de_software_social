@@ -8,6 +8,7 @@ const errorMiddleware = require('./middlewares/error.middleware');
 const routes = require('./routes');
 
 const app = express();
+app.set('trust proxy', 1);
 
 // ── Seguridad ──────────────────────────────────────────────────────────────
 app.use(helmet());
