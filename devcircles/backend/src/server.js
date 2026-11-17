@@ -9,7 +9,7 @@ async function conectarConReintentos() {
   let ultimoError;
   for (let i = 1; i <= MAX_INTENTOS; i++) {
     try {
-      console.log(`Conectando a: ${config.db.host}:${config.db.port} (intento ${i}/${MAX_INTENTOS})`);
+      console.log('Credenciales leídas:', { user: config.db.user, db: config.db.database, passLen: config.db.password ? config.db.password.length : 0, passStart: config.db.password ? config.db.password.slice(0, 3) : '' });;
       await verificarConexion();
       return;
     } catch (err) {
