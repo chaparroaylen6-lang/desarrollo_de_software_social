@@ -1,6 +1,9 @@
+const fs = require('fs');
+const path = require('path');
+
 const app = require('./app');
 const config = require('./config/env');
-const { verificarConexion } = require('./config/db');
+const { pool, verificarConexion } = require('./config/db');
 
 const MAX_INTENTOS = 5;
 const ESPERA_MS = 3000;
@@ -23,9 +26,43 @@ async function conectarConReintentos() {
   throw ultimoError;
 }
 
+async function inicializarTablas() {
+  try {
+    const [rows] = await pool.query('SHOW TABLES');
+    if (rows.length > 0) {
+      console.log('[db] Las tablas ya existen, omitiendo schema/seed.');
+      return;
+    }
+
+    console.log('[db] Creando tablas desde schema.sql...');
+    const schemaPath = path.join(__dirname, '../database/schema.sql');
+    const schema = fs.readFileSync(schemaPath, 'utf8')
+      .replace(/CREATE DATABASE.*?;/gi, '')
+      .replace(/USE\s+`?devcircles`?\s*;/gi, 'USE railway;');
+
+    for (const stmt of schema.split(';')) {
+      if (stmt.trim()) await pool.query(stmt);
+    }
+    console.log('[db] ✅ schema.sql ejecutado');
+
+    const seedPath = path.join(__dirname, '../database/seed.sql');
+    if (fs.existsSync(seedPath)) {
+      const seed = fs.readFileSync(seedPath, 'utf8')
+        .replace(/USE\s+`?devcircles`?\s*;/gi, 'USE railway;');
+      for (const stmt of seed.split(';')) {
+        if (stmt.trim()) await pool.query(stmt);
+      }
+      console.log('[db] ✅ seed.sql ejecutado');
+    }
+  } catch (err) {
+    console.error('[db] ❌ Error al inicializar tablas:', err.message);
+  }
+}
+
 (async () => {
   try {
     await conectarConReintentos();
+    await inicializarTablas();
     app.listen(config.port, () => {
       console.log(`[server]  DevCircles API corriendo en http://localhost:${config.port}/api`);
       console.log(`[server]    Entorno: ${config.nodeEnv}`);
