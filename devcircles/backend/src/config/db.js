@@ -9,6 +9,7 @@ const pool = mysql.createPool({
   user:            config.db.user,
   password:        config.db.password,
   database:        config.db.database,
+  family:          0,           // IPv6/IPv4 dual (necesario en redes internas de Railway)
   connectionLimit: config.db.connectionLimit,
   waitForConnections: true,
   queueLimit: 0,            // cola ilimitada

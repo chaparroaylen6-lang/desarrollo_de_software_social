@@ -10,7 +10,7 @@ const { verificarConexion } = require('./config/db');
       console.log(`[server]    Entorno: ${config.nodeEnv}`);
     });
   } catch (err) {
-    console.error('[server] ❌ No se pudo conectar a MySQL:', err);
+    console.error('[server] ❌ No se pudo conectar a MySQL:', err.code || err);
     process.exit(1);
   }
 })();
