@@ -6,6 +6,7 @@
     <title>DevCircles</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
     <link href="css/variables.css" rel="stylesheet">
+    <link href="css/base.css" rel="stylesheet">
     <link href="styles.css" rel="stylesheet">
     <link href="css/layout.css" rel="stylesheet">
     <link href="css/componentes.css" rel="stylesheet">
@@ -14,7 +15,11 @@
     <header>
         <div class="izquierda">
             <a href="#/feed" class="marca">
-                <img src="logo/logo-devcircles-claro.png" alt="DevCircles" class="logo">
+                <picture>
+                    <!-- el logo claro es para fondo oscuro, y al reves -->
+                    <source srcset="logo/logo-devcircles-claro.png" media="(prefers-color-scheme: dark)">
+                    <img src="logo/logo-devcircles-oscuro.png" alt="DevCircles" class="logo">
+                </picture>
             </a>
         </div>
         <div class="centro">
